@@ -32,8 +32,22 @@ def gemini_agent(origin_name: str):
     )
     result = agent.run_sync(f"The origin movie name is: {origin_name}")
     print(result.data)
+    return result.data
     # > city='London' country='United Kingdom'
     # print(result.usage())
 
 
-gemini_agent("2024年国产奇幻片《传说》BD国语中字.mp4")
+def rename(root_dir: str, name_info: NameInfo):
+    origin_name_full = os.path.join(root_dir, name_info.origin_name)
+    new_movie_name = (
+        f"{name_info.movie_name}(name_info.movie_year).{name_info.movie_file_ext}"
+    )
+    movie_name_full = os.path.join(root_dir, new_movie_name)
+
+    if not os.path.exists(origin_name_full):
+        raise FileNotFoundError
+
+    try:
+        os.rename(origin_name_full, movie_name_full)
+    except Exception as e:
+        raise ValueError(e)
