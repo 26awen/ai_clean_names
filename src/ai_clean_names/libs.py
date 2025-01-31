@@ -28,7 +28,7 @@ class NameInfo(BaseModel):
 
 def gemini_agent(origin_name: str):
     agent = Agent(
-        "google-gla:gemini-1.5-flash", system_prompt=prompt, result_type=NameInfo
+        "google-gla:gemini-1.5-pro", system_prompt=prompt, result_type=NameInfo
     )
     result = agent.run_sync(f"The origin movie name is: {origin_name}")
     print(result.data)
@@ -51,7 +51,7 @@ def get_filenames(src_root: str, wildcards: list[str], recursive: bool = False):
 def rename(root_dir: str, name_info: NameInfo):
     origin_name_full = os.path.join(root_dir, name_info.origin_name)
     new_movie_name = (
-        f"{name_info.movie_name}(name_info.movie_year).{name_info.movie_file_ext}"
+        f"{name_info.movie_name}({name_info.movie_year}).{name_info.movie_file_ext}"
     )
     movie_name_full = os.path.join(root_dir, new_movie_name)
 
@@ -59,7 +59,7 @@ def rename(root_dir: str, name_info: NameInfo):
         raise FileNotFoundError
 
     try:
-        print(f"Renaming {name_info.origin_name} to {name_info.movie_name}")
+        print(f"Renaming {name_info.origin_name} to {new_movie_name}")
         os.rename(origin_name_full, movie_name_full)
     except Exception as e:
         raise ValueError(e)
