@@ -1,5 +1,5 @@
 import os
-
+from glob import glob
 from pydantic import BaseModel
 from pydantic_ai import Agent
 from dotenv import load_dotenv
@@ -37,6 +37,17 @@ def gemini_agent(origin_name: str):
     # print(result.usage())
 
 
+def split_path(p: str):
+    return os.path.dirname(p), os.path.basename(p)
+
+
+def get_filenames(src_root: str, wildcards: list[str], recursive: bool = False):
+    raw_filenames = []
+    for wc in wildcards:
+        raw_filenames.extend(glob(os.path.join(src_root, wc), recursive=recursive))
+    return raw_filenames
+
+
 def rename(root_dir: str, name_info: NameInfo):
     origin_name_full = os.path.join(root_dir, name_info.origin_name)
     new_movie_name = (
@@ -48,6 +59,7 @@ def rename(root_dir: str, name_info: NameInfo):
         raise FileNotFoundError
 
     try:
+        print(f"Renaming {name_info.origin_name} to {name_info.movie_name}")
         os.rename(origin_name_full, movie_name_full)
     except Exception as e:
         raise ValueError(e)
