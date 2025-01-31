@@ -3,7 +3,7 @@ import re
 from dataclasses import dataclass
 from dotenv import load_dotenv
 
-load_dotenv()
+_ = load_dotenv()
 
 import anthropic
 import glob
@@ -12,7 +12,7 @@ from rich import print
 ANTHROPIC_API_KEY = os.getenv("ANTHROPIC_API_KEY")
 ANTHROPIC_MODEL = os.getenv("ANTHROPIC_MODEL")
 ANTHROPIC_MAX_TOKENS = os.getenv("ANTHROPIC_MAX_TOKENS")
-ANTHROPIC_BASE_URL = os.getenv("ANTHROPIC_BASE_URL")
+# ANTHROPIC_BASE_URL = os.getenv("ANTHROPIC_BASE_URL")
 
 
 @dataclass
@@ -87,6 +87,7 @@ prompt = """
     There is no dot between the name.
     There is no dot around the year.
     Name could be between brackets:(),《》. But your pattern should not include brackets.
+    If some part of the name is in brackets:(), you should keep it as the pattern. For example: 守望者(上)
     Year could be missing. Then the pattern is "".
 """
 
@@ -109,9 +110,7 @@ def get_name_pattern(src_name: str) -> str:
 
     if response.stop_reason == "tool_use":
         print("tool_use:")
-        tool_use = next(
-            block for block in response.content if block.type == "tool_use"
-        )
+        tool_use = next(block for block in response.content if block.type == "tool_use")
         tool_name = tool_use.name
         tool_input = tool_use.input
         print(tool_name)
