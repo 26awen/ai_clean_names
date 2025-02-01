@@ -26,10 +26,10 @@ class NameInfo(BaseModel):
     movie_file_ext: str
 
 
-def gemini_agent(origin_name: str):
-    agent = Agent(
-        "google-gla:gemini-1.5-pro", system_prompt=prompt, result_type=NameInfo
-    )
+def get_name_info(origin_name: str, model: str | None = None):
+    if model is None:
+        model = "google-gla:gemini-1.5-pro"
+    agent = Agent(model=model, system_prompt=prompt, result_type=NameInfo)
     result = agent.run_sync(f"The origin movie name is: {origin_name}")
     print(result.data)
     return result.data
@@ -41,7 +41,11 @@ def split_path(p: str):
     return os.path.dirname(p), os.path.basename(p)
 
 
-def get_filenames(src_root: str, wildcards: list[str], recursive: bool = False):
+def get_filenames(
+    src_root: str, wildcards: list[str] | None = None, recursive: bool = False
+):
+    if wildcards is None:
+        wildcards = ["*.mp4", "*.mkv", "*.ts"]
     raw_filenames = []
     for wc in wildcards:
         raw_filenames.extend(glob(os.path.join(src_root, wc), recursive=recursive))
