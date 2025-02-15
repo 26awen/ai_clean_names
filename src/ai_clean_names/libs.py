@@ -36,7 +36,7 @@ def get_name_info(origin_name: str, model: str | None = None):
         model = "google-gla:gemini-1.5-pro"
     agent = Agent(model=model, system_prompt=prompt, result_type=NameInfo)
     result = agent.run_sync(f"The origin movie name is: {origin_name}")
-    print(result.data)
+    # printresult.data)
     return result.data
     # > city='London' country='United Kingdom'
     # print(result.usage())
