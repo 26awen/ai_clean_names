@@ -94,9 +94,10 @@ def batch_rename(
                 5
             )  # gemini model is too easy to be overloaded, so put some sleep here.
             results.append(data)
-            print(data)
+            rename(root_dir, data)
+            # print(data)
         except Exception as e:
             print(e)
 
-    for r in results:
-        rename(root_dir, r)
+    # for r in results:
+    #     rename(root_dir, r)
