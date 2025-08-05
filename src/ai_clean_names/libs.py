@@ -97,7 +97,7 @@ def batch_rename(
             rename(root_dir, data)
             # print(data)
         except Exception as e:
-            print(e)
+            print(f"Error: {type(e).__name__}: {e or 'No message'}")
 
     # for r in results:
     #     rename(root_dir, r)
