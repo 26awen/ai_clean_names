@@ -120,21 +120,22 @@ def rename(root_dir: str, name_info: NameInfo, sub_dir: str | None = None):
 #     except Exception as e:
 #         raise ValueError(e)
 
+
 def filter_downloading_files(file_list: list[tuple[str, str]], root_dir: str):
     """
     过滤正在下载的文件
     直接检查文件系统中是否存在对应的.aria2文件
     """
     print(f"过滤前文件列表: {[item[1] for item in file_list]}")  # 调试信息
-    
+
     filtered_list = []
     downloading_files = []
-    
+
     for item in file_list:
         dir_path, filename = item
         # 构造对应的.aria2文件路径
         aria2_file_path = os.path.join(root_dir, filename + ".aria2")
-        
+
         if os.path.exists(aria2_file_path):
             # 如果存在.aria2文件，说明正在下载，跳过这个文件
             downloading_files.append(filename)
@@ -142,10 +143,11 @@ def filter_downloading_files(file_list: list[tuple[str, str]], root_dir: str):
         else:
             # 如果不存在.aria2文件，保留这个文件
             filtered_list.append(item)
-    
+
     print(f"正在下载的文件: {downloading_files}")
     print(f"过滤后文件列表: {[item[1] for item in filtered_list]}")
     return filtered_list
+
 
 # def filter_downloading_files(file_list: list[tuple[str, str]]):
 #     """
@@ -183,6 +185,10 @@ def batch_rename(
     # 过滤掉还没下载好的文件——存在"aria2"后缀的同名视频文件。
     if ignore_unfinshed:
         splited_names = filter_downloading_files(splited_names, root_dir=root_dir)
+
+    # 假如没有文件就不执行
+    if len(splited_names) == 0:
+        raise ValueError("No file to be renamed.")
 
     results = []
     for item in splited_names:
